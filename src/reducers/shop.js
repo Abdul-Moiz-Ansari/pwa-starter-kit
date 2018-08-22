@@ -10,6 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import {
   GET_PRODUCTS,
+  ADD_PRODUCT,
+  SET_ADD_PRODUCT_SUCCESS,
   ADD_TO_CART,
   REMOVE_FROM_CART,
   CHECKOUT_SUCCESS,
@@ -19,20 +21,35 @@ import { createSelector } from 'reselect';
 
 const INITIAL_CART = {
   addedIds: [],
-  quantityById: {}
+  quantityById: {},
+  addProductSuccess: false
 };
 
 const UPDATED_CART = {
   addedIds: ['1'],
-  quantityById: {'1': 1}
+  quantityById: { '1': 1 }
 };
 
-const shop = (state = {products: {}, cart: INITIAL_CART}, action) => {
+const shop = (state = { products: {}, cart: INITIAL_CART }, action) => {
   switch (action.type) {
     case GET_PRODUCTS:
       return {
         ...state,
         products: action.products
+      };
+    case ADD_PRODUCT:
+      let _products = {};      
+      Object.keys(state.products).map(key => _products[key] = state.products[key]);
+      _products[action.payload.id] = action.payload;      
+      return {
+        ...state,
+        products : _products,
+        addProductSuccess: true
+      };
+    case SET_ADD_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        addProductSuccess : action.payload
       };
     case ADD_TO_CART:
     case REMOVE_FROM_CART:
@@ -128,6 +145,7 @@ const quantityById = (state = INITIAL_CART.quantityById, action) => {
   const productId = action.productId;
   switch (action.type) {
     case ADD_TO_CART:
+
       return {
         ...state,
         [productId]: (state[productId] || 0) + 1
@@ -164,9 +182,9 @@ export const cartItemsSelector = createSelector(
   productsSelector,
   (cart, products) => {
     const items = [];
-    for (let id of cart.addedIds) {
+    for (let id of cart.addedIds) {      
       const item = products[id];
-      items.push({id: item.id, title: item.title, amount: cart.quantityById[id], price: item.price});
+      items.push({ id: item.id, title: item.title, amount: cart.quantityById[id], price: item.price });
     }
     return items;
   }
