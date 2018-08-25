@@ -27,6 +27,7 @@ store.addReducers({
 // These are the elements needed by this element.
 import './shop-products.js';
 import './shop-cart.js';
+import './add-product.js';
 
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
@@ -34,7 +35,7 @@ import { ButtonSharedStyles } from './button-shared-styles.js';
 import { addToCartIcon } from './my-icons.js';
 
 class MyView3 extends connect(store)(PageViewElement) {
-  _render({_quantity, _error}) {
+  _render({ _quantity, _error }) {
     return html`
       ${SharedStyles}
       ${ButtonSharedStyles}
@@ -74,6 +75,10 @@ class MyView3 extends connect(store)(PageViewElement) {
         <code>&lt;shop-cart&gt;</code> are connected to the Redux store.</p>
       </section>
       <section>
+
+        <h3>Add Products</h3>
+        <add-product></add-product>
+
         <h3>Products</h3>
         <shop-products></shop-products>
 
@@ -93,11 +98,13 @@ class MyView3 extends connect(store)(PageViewElement) {
     `;
   }
 
-  static get properties() { return {
-    // This is the data from the store.
-    _quantity: Number,
-    _error: String
-  }}
+  static get properties() {
+    return {
+      // This is the data from the store.
+      _quantity: Number,
+      _error: String
+    }
+  }
 
   // This is called every time something is updated in the store.
   _stateChanged(state) {
